@@ -2,9 +2,8 @@
 #define _ADDRESS_HPP_
 #include "iostream"
 #include "ParsingException.hpp"
-#include "fstream"
-#include "regex"
-#include "vector"
+
+#include "Utils.hpp"
 
 enum StreetType { 
     Allee,
@@ -23,17 +22,20 @@ public:
     Address(int streetNumber, std::string city, std::string streetName, std::string streetType);
     ~Address();
     static std::vector<Address> parse(std::string file);
-    static std::vector<Address> search(std::string query, std::vector<Address> addresses);
-    std::string getCity();
-    int getStreetNumber();
-    std::string getStreetName();
-    StreetType getStreetType();
-
+    static std::vector<Address> search(std::string *query, std::string *target_city, std::string *target_street, std::vector<Address> addresses);
 private:
     std::string city;
     int streetNumber;
     std::string streetName;
     StreetType streetType;
+
+public:
+    std::string getCity() { return this->city; }
+    int getStreetNumber() { return this->streetNumber; }
+    std::string getStreetName() { return this->streetName; }
+    StreetType getStreetType() { return this->streetType; }
 };
+
+std::ostream &operator<<(std::ostream &os, Address &m);
 
 #endif
