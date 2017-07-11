@@ -13,7 +13,11 @@ void list_propositions(std::string *query, std::string *target_city, std::string
         int index = 1;
         for (auto &address : addresses) 
         {
-            std::cout << "{ " << index << " : " << address << " } ";
+            std::string addr_s;
+            std::ostringstream os;
+            os << address;
+            addr_s = toUpper(os.str());
+            std::cout << "{ " << index << " : " << addr_s << " } ";
             index++;
         }
         std::cout << std::endl;
@@ -69,7 +73,7 @@ void list_propositions(std::string *query, std::string *target_city, std::string
         std::vector<Address> result = Address::search(query, target_city, target_street, addresses, std::vector<Address>());
         if (result.size() == 1)
         {
-            std::cout << "=> " << result.at(0);
+            std::cout << "=> " << result.at(0) << "\n";
         }
         else
             list_propositions(query, target_city, target_street, result);
