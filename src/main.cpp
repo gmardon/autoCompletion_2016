@@ -36,7 +36,7 @@ void list_propositions(std::string *query, std::string *target_city, std::string
             else if (buffer.find(*query) != std::string::npos)
             {
                 char caracter_key;
-                if (buffer.size() >= (*query).size() + buffer.find(*query))
+                if (buffer.size() <= (*query).size() + buffer.find(*query))
                 {
                     if (*target_city == "")
                         caracter_key = address.getCity().at((*query).size() + buffer.find(*query));
@@ -48,7 +48,7 @@ void list_propositions(std::string *query, std::string *target_city, std::string
                 else
                 {
                     caracter_key = buffer.at((*query).size() + buffer.find(*query));
-                }
+               }
                 values[std::tolower(caracter_key)]++;
             }
         }

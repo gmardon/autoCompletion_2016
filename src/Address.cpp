@@ -3,7 +3,6 @@
 
 Address::Address(int streetNumber, std::string city, std::string streetName, std::string streetType)
 {
-    //std::cout << "Address ('" << streetNumber << "', '" << city << "', '" << streetName << "', '" << streetType << "')\n";
     this->streetNumber = streetNumber;
     this->city = city;
     this->streetName = streetName;
@@ -84,16 +83,18 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
     transform((*query).begin(), (*query).end(), (*query).begin(),(int (*)(int))tolower);
     if (*target_city == "")
     {
+        printf("t0\n");
         std::vector<std::string> cities;
         for (auto &address : addresses) 
         {
+            printf("=>\n");
             std::string city = address.getCity();
             std::string buffer;
             std::stringstream stream(city);
             while (stream >> buffer)
             {
                 transform(buffer.begin(), buffer.end(), buffer.begin(),(int (*)(int))tolower);
-                if (stringncmp(buffer, *query, (*query).length()))
+                if (stringncasecmp(buffer, *query, (*query).length()))
                 {
                     matching.push_back(address);
                     if(std::find(cities.begin(), cities.end(), address.getCity()) == cities.end())
@@ -104,6 +105,7 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
                 }
             }
         }
+        printf("cities.size() : %i\n", cities.size());
         if (cities.size() == 1)
         {
             *target_city = cities.at(0);
@@ -113,6 +115,7 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
     }
     else if (*target_street == "")
     {
+        printf("t1\n");
         std::vector<std::string> streets;
         for (auto &address : addresses) 
         {
@@ -137,6 +140,7 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
     }
     else
     {
+        printf("target_street: %s\n", (*target_street).c_str());
         std::vector<Address> sub;
         sub.push_back(last_result.at(std::stoi(*query) - 1));
         return (sub);
