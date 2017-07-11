@@ -20,7 +20,7 @@ SRC		=	$(SRC_P)main.cpp \
 
 OBJ					=		$(SRC:.cpp=.o)
 
-CXXFLAGS			+= 	-Wall -Wextra -std=c++11 -g -fpic
+CXXFLAGS			+= 	-Wall -Wextra -std=c++11 -g -fpic -pipe
 
 INCLUDE				=	-I./include
 

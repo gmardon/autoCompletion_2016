@@ -22,7 +22,7 @@ public:
     Address(int streetNumber, std::string city, std::string streetName, std::string streetType);
     ~Address();
     static std::vector<Address> parse(std::string file);
-    static std::vector<Address> search(std::string *query, std::string *target_city, std::string *target_street, std::vector<Address> addresses);
+    static std::vector<Address> search(std::string *query, std::string *target_city, std::string *target_street, std::vector<Address> addresses, std::vector<Address> last_result);
 private:
     std::string city;
     int streetNumber;

@@ -78,7 +78,7 @@ std::vector<Address> Address::parse(std::string file)
     return (addresses);
 }
 
-std::vector<Address> Address::search(std::string *query, std::string *target_city, std::string *target_street, std::vector<Address> addresses)
+std::vector<Address> Address::search(std::string *query, std::string *target_city, std::string *target_street, std::vector<Address> addresses, std::vector<Address> last_result)
 {
     std::vector<Address> matching;
     transform((*query).begin(), (*query).end(), (*query).begin(),(int (*)(int))tolower);
@@ -88,13 +88,19 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
         for (auto &address : addresses) 
         {
             std::string city = address.getCity();
-            transform(city.begin(), city.end(), city.begin(),(int (*)(int))tolower);
-            if (stringncmp(city, *query, (*query).length()))
+            std::string buffer;
+            std::stringstream stream(city);
+            while (stream >> buffer)
             {
-                matching.push_back(address);
-                if(std::find(cities.begin(), cities.end(), address.getCity()) == cities.end())
+                transform(buffer.begin(), buffer.end(), buffer.begin(),(int (*)(int))tolower);
+                if (stringncmp(buffer, *query, (*query).length()))
                 {
-                    cities.push_back(address.getCity());
+                    matching.push_back(address);
+                    if(std::find(cities.begin(), cities.end(), address.getCity()) == cities.end())
+                    {
+                        cities.push_back(address.getCity());
+                    }
+                    break;
                 }
             }
         }
@@ -105,7 +111,7 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
             *query = "";
         }
     }
-    else
+    else if (*target_street == "")
     {
         std::vector<std::string> streets;
         for (auto &address : addresses) 
@@ -115,9 +121,9 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
                 if (stringncasecmp(address.getStreetName(), *query, (*query).length()))
                 {
                     matching.push_back(address);
-                    if(std::find(streets.begin(), streets.end(), address.getStreetName()) == streets.end())
+                    if(std::find(streets.begin(), streets.end(), toUpper(address.getStreetName())) == streets.end())
                     {
-                        streets.push_back(address.getStreetName());
+                        streets.push_back(toUpper(address.getStreetName()));
                     }
                 }
             }
@@ -129,14 +135,12 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
             *query = "";
         }
     }
-    // then search on streetname
-    /*for (auto &address : addresses) 
+    else
     {
-        if (address.getStreetName().find(query) != std::string::npos)
-        {
-            matching.push_back(address);
-        }
-    }*/
+        std::vector<Address> sub;
+        sub.push_back(last_result.at(std::stoi(*query) - 1));
+        return (sub);
+    }
     return (matching);
 }
 
