@@ -13,11 +13,13 @@ void list_propositions(std::string *query, std::string *target_city, std::string
         int index = 1;
         for (auto &address : addresses) 
         {
+            if (index != 1)
+                std::cout << " ";
             std::string addr_s;
             std::ostringstream os;
             os << address;
             addr_s = toUpper(os.str());
-            std::cout << "{ " << index << " : " << addr_s << " } ";
+            std::cout << "{ " << index << " : " << addr_s << " }";
             index++;
         }
         std::cout << std::endl;
@@ -66,7 +68,7 @@ void list_propositions(std::string *query, std::string *target_city, std::string
                                 };
  
     std::set<std::pair<char, int>, Comparator> valuesSet(values.begin(), values.end(), compFunctor);
-    int index = 0;
+
     if (valuesSet.size() == 1)
     {
         *query += valuesSet.begin()->first;
@@ -79,14 +81,17 @@ void list_propositions(std::string *query, std::string *target_city, std::string
             list_propositions(query, target_city, target_street, result);
         return;
     }
+    int index = 0;
     for (std::pair<char, int> element : valuesSet)
     {
+        if (index != 0)
+            std::cout << " ";
         if (index == 5)
             break;
         if (*target_city != "")
-            std::cout << "{" << *target_city << ", " << toUpper(*query) << element.first << "} ";
+            std::cout << "{" << *target_city << ", " << toUpper(*query) << element.first << "}";
         else 
-            std::cout << "{" << toUpper(*query) << element.first << "} ";
+            std::cout << "{" << toUpper(*query) << element.first << "}";
         index++;
     }
     std::cout << std::endl;
