@@ -95,11 +95,11 @@ void Proposals::print()
     else if (this->state == CityNumberChoice) 
     {
         choices = std::vector<char>();
+        std::sort(last_result.begin(), last_result.end(), addressSort);
         for (auto &address : last_result) 
         {
             if (index != 0)
                 std::cout << " ";
-            std::string substr = address.getCity();
             std::cout << "{ " << (index + 1) << " : " << address.getCity() << " }";
             choices.push_back((char) (index + 49));
             index++;
@@ -137,11 +137,11 @@ void Proposals::print()
     else if (this->state == StreetNumberChoice) 
     {
         choices = std::vector<char>();
+        std::sort(last_result.begin(), last_result.end(), addressSort);
         for (auto &address : last_result) 
         {
             if (index != 0)
                 std::cout << " ";
-            std::string substr = address.getCity();
             std::cout << "{ " << (index + 1) << " : " << toUpper(address.getCity()) << ", " << address.getStreetNumber() << " " << address.getStreetTypeStr() << " " << toUpper(address.getStreetName()) << " }";
             choices.push_back((char) (index + 49));
             index++;
@@ -152,11 +152,11 @@ void Proposals::print()
     {
         std::set<std::pair<char, int>, Comparator> possibility = computePossibility(last_result);
         choices = std::vector<char>();
+        std::sort(last_result.begin(), last_result.end(), addressSort);
         for (auto &address : last_result) 
         {
             if (index != 0)
                 std::cout << " ";
-            std::string substr = address.getCity();
             std::cout << "{ " << (index + 1) << " : " << toUpper(address.getCity()) << ", " << address.getStreetNumber() << " " << address.getStreetTypeStr() << " " << toUpper(address.getStreetName()) << " }";
             choices.push_back((char) (index + 49));
             index++;

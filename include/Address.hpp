@@ -48,4 +48,25 @@ public:
 
 std::ostream &operator<<(std::ostream &os, Address &m);
 
+struct {
+    bool operator()(Address left, Address right) const
+    {   
+        if (toUpper(left.getCity()) == toUpper(right.getCity()))
+        {
+            if (toUpper(left.getStreetName()) == toUpper(right.getStreetName()))
+            {
+                if (left.getStreetTypeStr() == right.getStreetTypeStr())
+                {
+                    return left.getStreetNumber() < right.getStreetNumber();
+                }
+                else
+                    return left.getStreetTypeStr() < right.getStreetTypeStr();
+            }
+            else
+                return left.getStreetName() < right.getStreetName();
+        }
+        else
+            return left.getCity() < right.getCity();
+    }   
+} addressSort;
 #endif

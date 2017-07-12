@@ -47,4 +47,6 @@ public:
     std::string getQuery() { return this->query; }
 };
 
+
+
 #endif
