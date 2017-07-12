@@ -12,31 +12,32 @@ Proposals::~Proposals()
     
 bool Proposals::apply(char character)
 {
+    lastQuery = query;
     if(std::find(choices.begin(), choices.end(), character) == choices.end())
         return false;
 
     if (this->state == CityNumberChoice)
     {
         int index = character - 48;
-        this->chooseCity(last_result.at(index - 1).getCity());
+        this->chooseCity(lastResult.at(index - 1).getCity());
     }
     else if (this->state == StreetNumberChoice)
     {
         int index = character - 48;
-        this->chooseStreet(last_result.at(index - 1).getStreetName());
+        this->chooseStreet(lastResult.at(index - 1).getStreetName());
     }
     else if (this->state == AddressChoice)
     {
         int index = character - 48;
-        std::cout << "=> " << last_result.at(index - 1) << "\n";
+        std::cout << "=> " << lastResult.at(index - 1) << "\n";
         exit(0);
     }
     else
         query += std::tolower(character);
-    last_result = Address::search(this);
-    if (last_result.size() == 1)
+    lastResult = Address::search(this);
+    if (lastResult.size() == 1)
     {
-        std::cout << "=> " << last_result.at(0) << "\n";
+        std::cout << "=> " << lastResult.at(0) << "\n";
         exit(0);
     }
     return true;
@@ -65,7 +66,7 @@ void Proposals::print()
     }
     else if (this->state == CityChoice) 
     {
-        std::set<std::pair<char, int>, Comparator> possibility = computePossibility(last_result);
+        std::set<std::pair<char, int>, Comparator> possibility = computePossibility(lastResult);
         choices = std::vector<char>();
         if (this->state == CityNumberChoice)
         {
@@ -95,12 +96,12 @@ void Proposals::print()
     else if (this->state == CityNumberChoice) 
     {
         choices = std::vector<char>();
-        std::sort(last_result.begin(), last_result.end(), addressSort);
-        for (auto &address : last_result) 
+        std::sort(lastResult.begin(), lastResult.end(), addressSort);
+        for (auto &address : lastResult) 
         {
             if (index != 0)
                 std::cout << " ";
-            std::cout << "{ " << (index + 1) << " : " << address.getCity() << " }";
+            std::cout << "{ " << (index + 1) << " : " << toUpperQuery(address.getCity(), lastQuery) << " }";
             choices.push_back((char) (index + 49));
             index++;
         }
@@ -108,7 +109,7 @@ void Proposals::print()
     }
     else if (this->state == StreetChoice) 
     {
-        std::set<std::pair<char, int>, Comparator> possibility = computePossibility(last_result);
+        std::set<std::pair<char, int>, Comparator> possibility = computePossibility(lastResult);
         choices = std::vector<char>();
         if (this->state == StreetNumberChoice)
         {
@@ -137,12 +138,12 @@ void Proposals::print()
     else if (this->state == StreetNumberChoice) 
     {
         choices = std::vector<char>();
-        std::sort(last_result.begin(), last_result.end(), addressSort);
-        for (auto &address : last_result) 
+        std::sort(lastResult.begin(), lastResult.end(), addressSort);
+        for (auto &address : lastResult) 
         {
             if (index != 0)
                 std::cout << " ";
-            std::cout << "{ " << (index + 1) << " : " << toUpper(address.getCity()) << ", " << address.getStreetNumber() << " " << address.getStreetTypeStr() << " " << toUpper(address.getStreetName()) << " }";
+            std::cout << "{ " << (index + 1) << " : " << toUpper(address.getCity()) << ", " << address.getStreetNumber() << " " << address.getStreetTypeStr() << " " << toUpperQuery(address.getStreetName(), lastQuery) << " }";
             choices.push_back((char) (index + 49));
             index++;
         }
@@ -150,10 +151,10 @@ void Proposals::print()
     }
     else if (this->state == AddressChoice) 
     {
-        std::set<std::pair<char, int>, Comparator> possibility = computePossibility(last_result);
+        std::set<std::pair<char, int>, Comparator> possibility = computePossibility(lastResult);
         choices = std::vector<char>();
-        std::sort(last_result.begin(), last_result.end(), addressSort);
-        for (auto &address : last_result) 
+        std::sort(lastResult.begin(), lastResult.end(), addressSort);
+        for (auto &address : lastResult) 
         {
             if (index != 0)
                 std::cout << " ";

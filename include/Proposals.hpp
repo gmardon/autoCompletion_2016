@@ -30,8 +30,9 @@ public:
     std::set<std::pair<char, int>, Comparator> computePossibility(std::vector<Address> addresses);
 private:
     std::vector<Address> addresses;
-    std::vector<Address> last_result;
+    std::vector<Address> lastResult;
     std::string query;
+    std::string lastQuery;
     std::vector<char> choices;
     ProposalState state;
     std::string selectedCity;
@@ -45,6 +46,7 @@ public:
     void chooseCity(std::string city);
     void chooseStreet(std::string street); 
     std::string getQuery() { return this->query; }
+    std::string getLastQuery() { return this->lastQuery; }
 };
 
 

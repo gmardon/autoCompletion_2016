@@ -29,6 +29,19 @@ std::string toUpper(std::string str)
     return newstr;
 }
 
+std::string toUpperQuery(std::string str, std::string query)
+{
+    std::string newstr(str);
+    int firstIndex = 0;
+    int lastIndex = 0;
+    firstIndex = newstr.find(query);
+    lastIndex = newstr.find(" ", firstIndex);
+    if (lastIndex == 0)
+        lastIndex = newstr.size();
+    newstr.replace(firstIndex, query.size() + firstIndex + 1, toUpper(str.substr(firstIndex, lastIndex)));
+    return newstr;
+}
+
 std::string toLower(std::string str)
 {
     std::string newstr(str);

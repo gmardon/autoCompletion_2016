@@ -12,4 +12,5 @@ bool stringncmp(const std::string& a, const std::string& b, size_t len);
 bool stringncasecmp(const std::string& a, const std::string& b, size_t len);
 std::string toUpper(std::string str);
 std::string toLower(std::string str);
+std::string toUpperQuery(std::string str, std::string query);
 #endif
