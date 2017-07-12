@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
         if (strcmp(argv[1], "-h") == 0)
         {
             print_usage();
-            return (84);
+            return (0);
         }
         else
         {   

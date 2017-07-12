@@ -60,6 +60,8 @@ std::vector<Address> Address::parse(std::string file)
     std::vector<Address> addresses;
     std::ifstream input(file);
     std::regex address_regex("^([\\w\\s]*), ([\\d]+) (impasse|quai|rue|square|allée|place|boulevard|rue|chemin|avenue) ([\\w\\s-zàâçéèêëîïôûùüÿñæœ']+)$");
+    std::regex case1_regex("^([\\w\\s]*) ([\\d]+) (impasse|quai|rue|square|allée|place|boulevard|rue|chemin|avenue) ([\\w\\s-zàâçéèêëîïôûùüÿñæœ']+)$");
+    std::regex case2_regex("^([\\d]+) (impasse|quai|rue|square|allée|place|boulevard|rue|chemin|avenue) ([\\w\\s-zàâçéèêëîïôûùüÿñæœ']+), ([\\w\\s]*)$");
     std::smatch matches;
     for( std::string line; getline( input, line );)
     {
@@ -67,6 +69,16 @@ std::vector<Address> Address::parse(std::string file)
         {
             Address *address = new Address(atoi(matches[2].str().c_str()), matches[1].str(), matches[4].str(), matches[3].str());
             addresses.push_back(*address);
+        }
+        else if (regex_search(line, matches, case1_regex))
+        {
+            Address *address = new Address(atoi(matches[2].str().c_str()), matches[1].str(), matches[4].str(), matches[3].str());
+            addresses.push_back(*address);     
+        }
+        else if (regex_search(line, matches, case2_regex))
+        {
+            Address *address = new Address(atoi(matches[1].str().c_str()), matches[4].str(), matches[3].str(), matches[2].str());
+            addresses.push_back(*address);     
         }
         else
         {
