@@ -70,8 +70,8 @@ std::vector<Address> Address::parse(std::string file)
         }
         else
         {
-            //std::cout << "Unknow address.\n";
-            //throw UnknownAddressException();
+            std::cout << "Unknown address.\n";
+            exit(84);
         }
     }
     return (addresses);
