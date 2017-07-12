@@ -101,7 +101,7 @@ void Proposals::print()
         {
             if (index != 0)
                 std::cout << " ";
-            std::cout << "{ " << (index + 1) << " : " << toUpperQuery(address.getCity(), lastQuery) << " }";
+            std::cout << "{" << (index + 1) << " : " << toUpperQuery(address.getCity(), lastQuery) << "}";
             choices.push_back((char) (index + 49));
             index++;
         }
@@ -143,7 +143,7 @@ void Proposals::print()
         {
             if (index != 0)
                 std::cout << " ";
-            std::cout << "{ " << (index + 1) << " : " << toUpper(address.getCity()) << ", " << address.getStreetNumber() << " " << address.getStreetTypeStr() << " " << toUpperQuery(address.getStreetName(), lastQuery) << " }";
+            std::cout << "{" << (index + 1) << " : " << toUpper(address.getCity()) << ", " << address.getStreetNumber() << " " << address.getStreetTypeStr() << " " << toUpperQuery(address.getStreetName(), lastQuery) << "}";
             choices.push_back((char) (index + 49));
             index++;
         }
@@ -158,7 +158,7 @@ void Proposals::print()
         {
             if (index != 0)
                 std::cout << " ";
-            std::cout << "{ " << (index + 1) << " : " << toUpper(address.getCity()) << ", " << address.getStreetNumber() << " " << address.getStreetTypeStr() << " " << toUpper(address.getStreetName()) << " }";
+            std::cout << "{" << (index + 1) << " : " << toUpper(address.getCity()) << ", " << address.getStreetNumber() << " " << address.getStreetTypeStr() << " " << toUpper(address.getStreetName()) << "}";
             choices.push_back((char) (index + 49));
             index++;
         }
