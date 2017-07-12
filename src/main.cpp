@@ -1,11 +1,12 @@
 #include "Utils.hpp"
 #include "Address.hpp"
+#include "Proposals.hpp"
 
 void print_usage()
 {
     std::cout << ("USAGE\n\t./autoCompletion dictionnary\nDESCRIPTION\n\tdictionnary file, containing one address per line, serving as knowledge base\n");
 }
-
+/*
 void list_propositions(std::string *query, std::string *target_city, std::string *target_street, std::vector<Address> addresses)
 {
     if (*target_street != "")
@@ -42,14 +43,30 @@ void list_propositions(std::string *query, std::string *target_city, std::string
             else if (buffer.find(*query) != std::string::npos)
             {
                 char caracter_key;
-                if (buffer.size() <= (*query).size() + buffer.find(*query))
+                if (buffer.size() == (*query).size() + buffer.find(*query))
                 {
+                    int index = 1;
+                    for (auto &address : addresses) 
+                    {
+                        if (index != 1)
+                            std::cout << " ";
+                        std::string addr_s;
+                        std::ostringstream os;
+                        os << address.getCity();
+                        addr_s = toUpper(os.str());
+                        std::cout << "{ " << index << " : " << addr_s << " }";
+                        index++;
+                    }
+                    std::cout << std::endl;
+                    return;
+                    
                     if (*target_city == "")
                         caracter_key = address.getCity().at((*query).size() + buffer.find(*query));
                     else
                     {
                         caracter_key = address.getStreetName().at((*query).size() + buffer.find(*query));
                     }
+                    
                 }
                 else
                 {
@@ -96,6 +113,7 @@ void list_propositions(std::string *query, std::string *target_city, std::string
     }
     std::cout << std::endl;
 }
+*/
 
 int main(int argc, char* argv[])
 {
@@ -115,27 +133,19 @@ int main(int argc, char* argv[])
         {   
             try {
                 std::vector<Address> addresses = Address::parse(argv[1]);
-                std::vector<Address> last_result;
-                std::vector<Address> result;
-                std::string query = "";
-                std::string city = "";
-                std::string street = "";
+                Proposals proposals = Proposals(addresses);
                 std::string line;
-                list_propositions(&query, &city, &street, addresses);              
+                proposals.print();    
                 while (std::getline(std::cin, line))
                 {
                     if (line == "ABORT")
                         return (84);
-                    query += std::tolower(line[0]);
-                    last_result = result;
-                    result = Address::search(&query, &city, &street, addresses, last_result);
-                    if (result.size() == 1)
+                    if (!proposals.apply(std::tolower(line[0])))
                     {
-                        std::cout << "=> " << result.at(0) << "\n";
-                        return (0);
+                        std::cout << "Unknown address.\n";
+                        return (84);
                     }
-                    else
-                        list_propositions(&query, &city, &street, result);
+                    proposals.print();
                 }
             } catch (ParsingException *p) {
 

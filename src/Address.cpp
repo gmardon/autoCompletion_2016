@@ -1,11 +1,15 @@
 #include "Address.hpp"
-#include "UnknownAddressException.hpp"
 
 Address::Address(int streetNumber, std::string city, std::string streetName, std::string streetType)
 {
     this->streetNumber = streetNumber;
-    this->city = city;
-    this->streetName = streetName;
+    this->baseCity = city;
+    this->baseStreetName = streetName;
+
+    city.erase(std::remove(city.begin(), city.end(), '\''), city.end());
+    this->city = toLower(city);
+    streetName.erase(std::remove(streetName.begin(), streetName.end(), '\''), streetName.end());
+    this->streetName = toLower(streetName);
 
     if (streetType == "allée")
         this->streetType = Allee;
@@ -25,29 +29,8 @@ Address::Address(int streetNumber, std::string city, std::string streetName, std
         this->streetType = Rue;
     else if (streetType == "quai")
         this->streetType = Square;
-}
 
-std::string streetTypeToString(StreetType streetType)
-{
-    if (streetType == Allee)
-        return ("allée");
-    else if (streetType == Avenue)
-        return ("avenue");
-    else if (streetType == Boulevard)
-        return ("boulevard");
-    else if (streetType == Chemin)
-        return ("chemin");
-    else if (streetType == Impasse)
-        return ("impasse");
-    else if (streetType == Place)
-        return ("place");
-    else if (streetType == Quai)
-        return ("quai");
-    else if (streetType == Rue)
-        return ("rue");
-    else if (streetType == Quai)
-        return ("quai");
-    return ("");
+    this->streetTypeStr = streetType;
 }
 
 Address::~Address()
@@ -89,23 +72,21 @@ std::vector<Address> Address::parse(std::string file)
     return (addresses);
 }
 
-std::vector<Address> Address::search(std::string *query, std::string *target_city, std::string *target_street, std::vector<Address> addresses, std::vector<Address> last_result)
+std::vector<Address> Address::search(Proposals *proposals)
 {
     std::vector<Address> matching;
-    transform((*query).begin(), (*query).end(), (*query).begin(),(int (*)(int))tolower);
-    if (*target_city == "")
+    if (proposals->getState() == CityChoice)
     {
         std::vector<std::string> cities;
-        for (auto &address : addresses) 
+        for (auto &address : proposals->getAddresses()) 
         {
-            std::string city = address.getCity();
             std::string buffer;
-            std::stringstream stream(city);
+            std::stringstream stream(address.getCity());
             while (stream >> buffer)
             {
                 transform(buffer.begin(), buffer.end(), buffer.begin(),(int (*)(int))tolower);
-                if (stringncasecmp(buffer, *query, (*query).length()))
-                {
+                if (stringncasecmp(buffer, proposals->getQuery(), proposals->getQuery().length()))
+                {                                
                     matching.push_back(address);
                     if(std::find(cities.begin(), cities.end(), address.getCity()) == cities.end())
                     {
@@ -117,45 +98,57 @@ std::vector<Address> Address::search(std::string *query, std::string *target_cit
         }
         if (cities.size() == 1)
         {
-            *target_city = cities.at(0);
-            transform((*target_city).begin(), (*target_city).end(), (*target_city).begin(),(int (*)(int))toupper);
-            *query = "";
+            proposals->chooseCity(cities.at(0));
+            return Address::search(proposals);
         }
     }
-    else if (*target_street == "")
+    else if (proposals->getState() == StreetChoice)
     {
         std::vector<std::string> streets;
-        for (auto &address : addresses) 
+        for (auto &address : proposals->getAddresses()) 
         {
-            if (equals_ignore_case(address.getCity(), *target_city))
+            if (equals_ignore_case(address.getCity(), proposals->getSelectedCity()))
             {
-                if (stringncasecmp(address.getStreetName(), *query, (*query).length()))
+                std::string buffer;
+                std::stringstream stream(address.getStreetName());
+                while (stream >> buffer)
                 {
-                    matching.push_back(address);
-                    if(std::find(streets.begin(), streets.end(), toUpper(address.getStreetName())) == streets.end())
+                    if (stringncasecmp(buffer, proposals->getQuery(), (proposals->getQuery()).length()) || proposals->getQuery() == "")
                     {
-                        streets.push_back(toUpper(address.getStreetName()));
+                        matching.push_back(address);
+                        if(std::find(streets.begin(), streets.end(), address.getStreetName()) == streets.end())
+                        {
+                            streets.push_back(address.getStreetName());
+                        }
+                        break;
                     }
-                }
+                }   
             }
         }
         if (streets.size() == 1)
         {
-            *target_street = streets.at(0);
-            transform((*target_street).begin(), (*target_street).end(), (*target_street).begin(),(int (*)(int))toupper);
-            *query = "";
+            proposals->chooseStreet(streets.at(0));
+            return Address::search(proposals);
         }
     }
-    else
+    else if (proposals->getState() == AddressChoice)
     {
-        std::vector<Address> sub;
-        sub.push_back(last_result.at(std::stoi(*query) - 1));
-        return (sub);
+        std::vector<std::string> streets;
+        for (auto &address : proposals->getAddresses()) 
+        {
+            if (equals_ignore_case(address.getCity(), proposals->getSelectedCity()))
+            {
+                if (equals_ignore_case(address.getStreetName(), proposals->getSelectedStreet()))
+                {
+                    matching.push_back(address);
+                }
+            }
+        }
     }
     return (matching);
 }
 
 std::ostream &operator<<(std::ostream &os, Address &addr)
 {
-    return os << addr.getCity() << ", " << addr.getStreetNumber() << " " << streetTypeToString(addr.getStreetType()) << " " << addr.getStreetName();
+    return os << addr.getBaseCity() << ", " << addr.getStreetNumber() << " " << addr.getStreetTypeStr() << " " << addr.getBaseStreetName();
 }

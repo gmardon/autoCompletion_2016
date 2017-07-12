@@ -24,12 +24,14 @@ bool stringncasecmp(const std::string& a, const std::string& b, size_t len)
 
 std::string toUpper(std::string str)
 {
-    std::transform(str.begin(), str.end(),str.begin(), ::toupper);
-    return str;
+    std::string newstr(str);
+    std::transform(newstr.begin(), newstr.end(),newstr.begin(), ::toupper);
+    return newstr;
 }
 
 std::string toLower(std::string str)
 {
-    std::transform(str.begin(), str.end(),str.begin(), ::toupper);
-    return str;
+    std::string newstr(str);
+    std::transform(newstr.begin(), newstr.end(), newstr.begin(), ::tolower);
+    return newstr;
 }

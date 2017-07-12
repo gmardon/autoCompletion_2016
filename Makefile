@@ -16,7 +16,8 @@ ECHO				=		/bin/echo -e
 SRC_P	= ./src/
 SRC		=	$(SRC_P)main.cpp \
 			$(SRC_P)Address.cpp \
-			$(SRC_P)Utils.cpp
+			$(SRC_P)Utils.cpp \
+			$(SRC_P)Proposals.cpp
 
 OBJ					=		$(SRC:.cpp=.o)
 
